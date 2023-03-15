@@ -20,7 +20,7 @@ const server = app.listen(port, () => {
 
 let io = socket(server, {
   cors: {
-    origin: 'https://teman-main.web.app',
+    origin: 'https://teman-main-d3ac4.web.app',
     methods: ['GET', 'POST'],
   },
 });
