@@ -1,10 +1,10 @@
-const redis = require("../helper/redis.js");
-const axios = require("axios");
-
+const redis = require('../helper/redis.js');
+const axios = require('axios');
+const baseURL = 'https://temanmain-app-production.up.railway.app';
 class CategoryController {
   static async readAllCategory(req, res) {
     try {
-      const categoriesCache = await redis.get("app:categories");
+      const categoriesCache = await redis.get('app:categories');
 
       if (categoriesCache) {
         const categories = JSON.parse(categoriesCache);
@@ -12,11 +12,11 @@ class CategoryController {
         res.status(200).json(categories);
       } else {
         const { data: categories } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/categories",
+          method: 'GET',
+          url: `${baseURL}/categories`,
         });
 
-        await redis.set("app:categories", JSON.stringify(categories));
+        await redis.set('app:categories', JSON.stringify(categories));
 
         res.status(200).json(categories);
       }
@@ -32,12 +32,12 @@ class CategoryController {
       const data = req.body;
 
       const { data: newCategory } = await axios({
-        method: "POST",
-        url: "http://localhost:4002/categories",
+        method: 'POST',
+        url: `${baseURL}/categories`,
         data,
       });
 
-      await redis.del("app:categories");
+      await redis.del('app:categories');
 
       res.status(201).json(newCategory);
     } catch (error) {
@@ -53,12 +53,12 @@ class CategoryController {
       const data = req.body;
 
       const { data: category } = await axios({
-        method: "PUT",
-        url: "http://localhost:4002/categories/" + categoryId,
+        method: 'PUT',
+        url: `${baseURL}/categories/` + categoryId,
         data,
       });
 
-      await redis.del("app:categories");
+      await redis.del('app:categories');
 
       res.status(200).json(category);
     } catch (error) {
@@ -73,11 +73,11 @@ class CategoryController {
       const { categoryId } = req.params;
 
       const { data: category } = await axios({
-        method: "DELETE",
-        url: "http://localhost:4002/categories/" + categoryId,
+        method: 'DELETE',
+        url: `${baseURL}/categories/` + categoryId,
       });
 
-      await redis.del("app:categories");
+      await redis.del('app:categories');
 
       res.status(200).json(category);
     } catch (error) {
@@ -90,17 +90,17 @@ class CategoryController {
     try {
       const { categoryId } = req.params;
 
-      let categoriesCache = await redis.get("app:categories");
+      let categoriesCache = await redis.get('app:categories');
       let categories = [];
       if (categoriesCache) {
         categories = JSON.parse(categoriesCache);
       } else {
         const { data: categoriesData } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/categories" + categoryId,
+          method: 'GET',
+          url: `${baseURL}/categories` + categoryId,
         });
 
-        await redis.set("app:categories", JSON.stringify(categories));
+        await redis.set('app:categories', JSON.stringify(categories));
 
         categories = categoriesData;
       }
@@ -110,7 +110,7 @@ class CategoryController {
           response: {
             status: 404,
             data: {
-              message: "Category Not Found",
+              message: 'Category Not Found',
             },
           },
         };

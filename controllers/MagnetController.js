@@ -1,10 +1,12 @@
-const redis = require("../helper/redis.js");
-const axios = require("axios");
+const redis = require('../helper/redis.js');
+const axios = require('axios');
 
+const baseURLApp = 'https://temanmain-app-production.up.railway.app';
+const baseURLUser = 'https://temanmain-user-production.up.railway.app';
 class MagnetController {
   static async readAllMagnet(req, res) {
     try {
-      const magnetCache = await redis.get("app:magnets");
+      const magnetCache = await redis.get('app:magnets');
 
       if (magnetCache) {
         const magnets = JSON.parse(magnetCache);
@@ -12,11 +14,11 @@ class MagnetController {
         res.status(200).json(magnets);
       } else {
         const { data: magnets } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/magnets",
+          method: 'GET',
+          url: `${baseURLApp}/magnets`,
         });
 
-        await redis.set("app:magnets", JSON.stringify(magnets));
+        await redis.set('app:magnets', JSON.stringify(magnets));
 
         res.status(200).json(magnets);
       }
@@ -32,8 +34,8 @@ class MagnetController {
       const { id: userId } = req.user;
 
       const { data: magnets } = await axios({
-        method: "GET",
-        url: "http://localhost:4002/magnets/user",
+        method: 'GET',
+        url: `${baseURLApp}/magnets/user`,
         headers: {
           user_id: userId,
         },
@@ -53,12 +55,12 @@ class MagnetController {
       data.UserId = req.user.id;
 
       const { data: newMagnet } = await axios({
-        method: "POST",
-        url: "http://localhost:4002/magnets",
+        method: 'POST',
+        url: `${baseURLApp}/magnets`,
         data,
       });
 
-      await redis.del("app:magnets");
+      await redis.del('app:magnets');
 
       res.status(201).json(newMagnet);
     } catch (error) {
@@ -73,21 +75,21 @@ class MagnetController {
       const { magnetId } = req.params;
       const { access_token } = req.headers;
       const { data: magnet } = await axios({
-        method: "GET",
-        url: "http://localhost:4002/magnets/" + magnetId,
+        method: 'GET',
+        url: `${baseURLApp}/magnets/` + magnetId,
       });
-      let usersCache = await redis.get("user:users");
+      let usersCache = await redis.get('user:users');
       if (usersCache) {
         usersCache = JSON.parse(usersCache);
       } else {
         const { data: users } = await axios({
-          method: "GET",
-          url: "http://localhost:4001/users",
+          method: 'GET',
+          url: `${baseURLUser}/users`,
           headers: {
             access_token,
           },
         });
-        await redis.set("user:users", JSON.stringify(users));
+        await redis.set('user:users', JSON.stringify(users));
         usersCache = users;
       }
       const creatorMagnet = await usersCache.find(
@@ -113,15 +115,15 @@ class MagnetController {
       const { id: user_id } = req.user;
 
       const { data: magnet } = await axios({
-        method: "PUT",
-        url: "http://localhost:4002/magnets/" + magnetId,
+        method: 'PUT',
+        url: `${baseURLApp}/magnets/` + magnetId,
         headers: {
           user_id,
         },
         data,
       });
 
-      await redis.del("app:magnets");
+      await redis.del('app:magnets');
 
       res.status(200).json(magnet);
     } catch (error) {
@@ -137,14 +139,14 @@ class MagnetController {
       const { id: user_id } = req.user;
 
       const { data: magnet } = await axios({
-        method: "DELETE",
-        url: "http://localhost:4002/magnets/" + magnetId,
+        method: 'DELETE',
+        url: `${baseURLApp}/magnets/` + magnetId,
         headers: {
           user_id,
         },
       });
 
-      await redis.del("app:magnets");
+      await redis.del('app:magnets');
 
       res.status(200).json(magnet);
     } catch (error) {

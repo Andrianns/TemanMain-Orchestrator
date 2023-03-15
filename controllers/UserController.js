@@ -1,6 +1,7 @@
 const redis = require('../helper/redis.js');
 const axios = require('axios');
-
+const baseURLApp = 'https://temanmain-app-production.up.railway.app';
+const baseURLUser = 'https://temanmain-user-production.up.railway.app';
 class UserController {
   static async readAllUser(req, res) {
     try {
@@ -13,7 +14,7 @@ class UserController {
       } else {
         const { data: users } = await axios({
           method: 'GET',
-          url: 'http://localhost:4001/users/public',
+          url: `${baseURLUser}/users/public`,
         });
 
         await redis.set('user:users', JSON.stringify(users));
@@ -33,7 +34,7 @@ class UserController {
       const { access_token } = req.headers;
       const { data: newUser } = await axios({
         method: 'POST',
-        url: 'http://localhost:4001/users',
+        url: `${baseURLUser}/users`,
         data,
         headers: {
           access_token,
@@ -58,7 +59,7 @@ class UserController {
       const { access_token } = req.headers;
       const { data: user } = await axios({
         method: 'GET',
-        url: 'http://localhost:4001/users/' + id,
+        url: `${baseURLUser}/users/` + id,
         headers: {
           access_token,
         },
@@ -80,7 +81,7 @@ class UserController {
 
       const { data: user } = await axios({
         method: 'GET',
-        url: 'http://localhost:4001/users/' + id,
+        url: `${baseURLUser}/users/` + id,
         headers: {
           access_token,
         },
@@ -103,7 +104,7 @@ class UserController {
       console.log(data, '--------------------');
       const { data: user } = await axios({
         method: 'PUT',
-        url: 'http://localhost:4001/users/' + id,
+        url: `${baseURLUser}/users/` + id,
         data,
         headers: {
           access_token,
@@ -130,7 +131,7 @@ class UserController {
 
       const { data: user } = await axios({
         method: 'PUT',
-        url: 'http://localhost:4001/users/' + id,
+        url: `${baseURLUser}/users/` + id,
         data,
         headers: {
           access_token,
@@ -154,7 +155,7 @@ class UserController {
 
       const { data: user } = await axios({
         method: 'DELETE',
-        url: 'http://localhost:4001/users/' + id,
+        url: `${baseURLUser}/users/` + id,
         headers: {
           access_token,
         },
@@ -177,7 +178,7 @@ class UserController {
 
       const { data: newUser } = await axios({
         method: 'POST',
-        url: 'http://localhost:4001/users/register',
+        url: `${baseURLUser}/users/register`,
         data: data,
       });
 
@@ -197,7 +198,7 @@ class UserController {
 
       const { data: user } = await axios({
         method: 'POST',
-        url: 'http://localhost:4001/users/login',
+        url: `${baseURLUser}/users/login`,
         data,
       });
 
@@ -214,7 +215,7 @@ class UserController {
       const data = req.body;
       const { data: newUser } = await axios({
         method: 'POST',
-        url: 'http://localhost:4001/users/public/register',
+        url: `${baseURLUser}/users/public/register`,
         data,
       });
 
@@ -234,7 +235,7 @@ class UserController {
 
       const { data: user } = await axios({
         method: 'POST',
-        url: 'http://localhost:4001/users/public/login',
+        url: `${baseURLUser}/users/public/login`,
         data,
       });
 

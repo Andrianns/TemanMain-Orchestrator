@@ -1,7 +1,8 @@
-const axios = require("axios");
-const fetch = require("node-fetch");
-const redis = require("../helper/redis.js");
-
+const axios = require('axios');
+const fetch = require('node-fetch');
+const redis = require('../helper/redis.js');
+const baseURLApp = 'https://temanmain-app-production.up.railway.app';
+const baseURLUser = 'https://temanmain-user-production.up.railway.app';
 class RequestController {
   static async createRequest(req, res) {
     try {
@@ -10,8 +11,8 @@ class RequestController {
       const { requestDescription } = req.body;
       const { access_token } = req.headers;
       const { data } = await axios({
-        method: "POST",
-        url: `http://localhost:4002/requests/event/${eventId}/magnet/${magnetId}`,
+        method: 'POST',
+        url: `${baseURLApp}/requests/event/${eventId}/magnet/${magnetId}`,
         data: {
           requestDescription,
         },
@@ -23,53 +24,53 @@ class RequestController {
       });
       const targetUserId = data.magnet.UserId;
       // console.log(data, "<<<<<<<<<<<<");
-      let usersCache = await redis.get("user:users");
+      let usersCache = await redis.get('user:users');
       if (usersCache) {
         usersCache = JSON.parse(usersCache);
       } else {
         const { data: users } = await axios({
-          method: "GET",
-          url: "http://localhost:4001/users",
+          method: 'GET',
+          url: `${baseURLUser}/users`,
           headers: {
             access_token,
           },
         });
 
-        await redis.set("user:users", JSON.stringify(users));
+        await redis.set('user:users', JSON.stringify(users));
         usersCache = users;
       }
       const targetUser = usersCache.find((el) => el.id === targetUserId);
       const currentUser = usersCache.find((el) => el.id === user_id);
 
-      let eventsCache = await redis.get("event:events");
+      let eventsCache = await redis.get('event:events');
       if (eventsCache) {
         // console.log("CACHE");
         eventsCache = JSON.parse(eventsCache);
-        await redis.del("event:events");
+        await redis.del('event:events');
       } else {
         // console.log("axiois");
         const { data: events, status } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/events",
+          method: 'GET',
+          url: `${baseURLApp}/events`,
         });
         eventsCache = events;
-        await redis.set("event:events", JSON.stringify(events));
-        await redis.del("event:events");
+        await redis.set('event:events', JSON.stringify(events));
+        await redis.del('event:events');
       }
       const targetEvent = eventsCache.find((el) => el.id === +eventId);
       const options = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4',
         },
         body: JSON.stringify({
           message: {
             to: {
               email: targetUser.email,
             },
-            template: "9ZSCQ6QT3R4M8WND42V6C4350HF8",
+            template: '9ZSCQ6QT3R4M8WND42V6C4350HF8',
             data: {
               name: currentUser.firstName,
               userTargetName: targetUser.firstName,
@@ -81,7 +82,7 @@ class RequestController {
         }),
       };
 
-      fetch("https://api.courier.com/send", options)
+      fetch('https://api.courier.com/send', options)
         .then((response) => response.json())
         .then((response) => console.log(response))
         .catch((err) => console.error(err));
@@ -100,8 +101,8 @@ class RequestController {
       const { id: user_id } = req.user;
       const { requestDescription } = req.body;
       const { data } = await axios({
-        method: "PUT",
-        url: `http://localhost:4002/requests/${requestId}`,
+        method: 'PUT',
+        url: `${baseURLApp}/requests/${requestId}`,
         data: {
           requestDescription,
         },
@@ -123,24 +124,24 @@ class RequestController {
       const { access_token } = req.headers;
 
       const { data } = await axios({
-        method: "GET",
-        url: `http://localhost:4002/requests/user`,
+        method: 'GET',
+        url: `${baseURLApp}/requests/user`,
         headers: {
           user_id: userId,
         },
       });
-      let usersCache = await redis.get("user:users");
+      let usersCache = await redis.get('user:users');
       if (usersCache) {
         usersCache = JSON.parse(usersCache);
       } else {
         const { data: users } = await axios({
-          method: "GET",
-          url: "http://localhost:4001/users",
+          method: 'GET',
+          url: `${baseURLUser}/users`,
           headers: {
             access_token,
           },
         });
-        await redis.set("user:users", JSON.stringify(users));
+        await redis.set('user:users', JSON.stringify(users));
         usersCache = users;
       }
       data.forEach((el) => {
@@ -149,7 +150,7 @@ class RequestController {
       });
       res.status(200).json(data);
     } catch (error) {
-      console.log(error, "<<<<<<");
+      console.log(error, '<<<<<<');
       const { status, data } = error.response;
 
       res.status(status).json(data);
@@ -161,69 +162,69 @@ class RequestController {
       const { requestId } = req.params;
       const { id: user_id } = req.user;
       const { data } = await axios({
-        method: "PUT",
-        url: `http://localhost:4002/requests/${requestId}/accept`,
+        method: 'PUT',
+        url: `${baseURLApp}/requests/${requestId}/accept`,
         headers: {
           user_id: user_id,
         },
       });
 
       const { data: targetRequest } = await axios({
-        method: "GET",
-        url: `http://localhost:4002/requests/public/${requestId}`,
+        method: 'GET',
+        url: `${baseURLApp}/requests/public/${requestId}`,
         headers: {
           user_id: user_id,
         },
       });
 
-      let eventsCache = await redis.get("event:events");
+      let eventsCache = await redis.get('event:events');
       if (eventsCache) {
         // console.log("CACHE");
         eventsCache = JSON.parse(eventsCache);
-        await redis.del("event:events");
+        await redis.del('event:events');
       } else {
         // console.log("axiois");
         const { data: events, status } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/events",
+          method: 'GET',
+          url: `${baseURLApp}/events`,
         });
         eventsCache = events;
-        await redis.set("event:events", JSON.stringify(events));
-        await redis.del("event:events");
+        await redis.set('event:events', JSON.stringify(events));
+        await redis.del('event:events');
       }
       const targetEvent = eventsCache.find(
         (el) => el.id === +targetRequest.EventId
       );
       const targetUserId = targetRequest.UserId;
       // console.log(data, "<<<<<<<<<<<<");
-      let usersCache = await redis.get("user:users");
+      let usersCache = await redis.get('user:users');
       if (usersCache) {
         usersCache = JSON.parse(usersCache);
       } else {
         const { data: users } = await axios({
-          method: "GET",
-          url: "http://localhost:4001/users",
+          method: 'GET',
+          url: `${baseURLUser}/users`,
           headers: {
             access_token,
           },
         });
-        await redis.set("user:users", JSON.stringify(users));
+        await redis.set('user:users', JSON.stringify(users));
         usersCache = users;
       }
       const targetUser = usersCache.find((el) => el.id === targetUserId);
       const options = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4',
         },
         body: JSON.stringify({
           message: {
             to: {
               email: targetUser.email,
             },
-            template: "GN5MF7NE0FMEHJNNMV07DJM70Y15",
+            template: 'GN5MF7NE0FMEHJNNMV07DJM70Y15',
             data: {
               userTargetName: targetUser.firstName,
               url: targetEvent.eventHomepageLink,
@@ -234,7 +235,7 @@ class RequestController {
         }),
       };
 
-      fetch("https://api.courier.com/send", options)
+      fetch('https://api.courier.com/send', options)
         .then((response) => response.json())
         .then((response) => console.log(response))
         .catch((err) => console.error(err));
@@ -252,48 +253,48 @@ class RequestController {
       const { access_token } = req.headers;
       const { id: user_id } = req.user;
       const { data } = await axios({
-        method: "PUT",
-        url: `http://localhost:4002/requests/${requestId}/reject`,
+        method: 'PUT',
+        url: `${baseURLApp}/requests/${requestId}/reject`,
         headers: {
           user_id: user_id,
         },
       });
       const { data: targetRequest } = await axios({
-        method: "GET",
-        url: `http://localhost:4002/requests/public/${requestId}`,
+        method: 'GET',
+        url: `${baseURLApp}/requests/public/${requestId}`,
         headers: {
           user_id: user_id,
         },
       });
       const targetUserId = +targetRequest.UserId;
       const currentUserId = +user_id;
-      let eventsCache = await redis.get("event:events");
+      let eventsCache = await redis.get('event:events');
       if (eventsCache) {
         // console.log("CACHE");
         eventsCache = JSON.parse(eventsCache);
-        await redis.del("event:events");
+        await redis.del('event:events');
       } else {
         // console.log("axiois");
         const { data: events, status } = await axios({
-          method: "GET",
-          url: "http://localhost:4002/events",
+          method: 'GET',
+          url: `${baseURLApp}/events`,
         });
         eventsCache = events;
-        await redis.set("event:events", JSON.stringify(events));
-        await redis.del("event:events");
+        await redis.set('event:events', JSON.stringify(events));
+        await redis.del('event:events');
       }
-      let usersCache = await redis.get("user:users");
+      let usersCache = await redis.get('user:users');
       if (usersCache) {
         usersCache = JSON.parse(usersCache);
       } else {
         const { data: users } = await axios({
-          method: "GET",
-          url: "http://localhost:4001/users",
+          method: 'GET',
+          url: `${baseURLUser}/users`,
           headers: {
             access_token,
           },
         });
-        await redis.set("user:users", JSON.stringify(users));
+        await redis.set('user:users', JSON.stringify(users));
         usersCache = users;
       }
       const targetUser = usersCache.find((el) => el.id === targetUserId);
@@ -303,18 +304,18 @@ class RequestController {
       );
 
       const options = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer pk_prod_R6NNEYEZ5QMY2CNTVK56Z4DFCNJ4',
         },
         body: JSON.stringify({
           message: {
             to: {
               email: targetUser.email,
             },
-            template: "S2GFFQSR6TMNZ8MGRZW3K832HGPR",
+            template: 'S2GFFQSR6TMNZ8MGRZW3K832HGPR',
             data: {
               userTargetName: targetUser.firstName,
               name: currentUser.firstName,
@@ -326,7 +327,7 @@ class RequestController {
         }),
       };
 
-      fetch("https://api.courier.com/send", options)
+      fetch('https://api.courier.com/send', options)
         .then((response) => response.json())
         .then((response) => console.log(response))
         .catch((err) => console.error(err));
