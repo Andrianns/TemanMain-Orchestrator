@@ -1,6 +1,7 @@
 const redis = require('../helper/redis');
 const axios = require('axios');
 const baseURL = 'https://temanmain-app-production.up.railway.app';
+const baseURLUser = 'https://temanmain-user-production.up.railway.app';
 
 class EventController {
   static async getAllEvents(req, res) {
@@ -29,7 +30,7 @@ class EventController {
         // console.log("axiois");
         const { data: users } = await axios({
           method: 'GET',
-          url: `${baseURL}/users/public`,
+          url: `${baseURLUser}/users/public`,
         });
         usersCache = users;
         await redis.set('user:users', JSON.stringify(users));
@@ -65,7 +66,7 @@ class EventController {
         // console.log("axiois");
         const { data: users } = await axios({
           method: 'GET',
-          url: `${baseURL}/users/public`,
+          url: `${baseURLUser}/users/public`,
         });
         usersCache = users;
         await redis.set('user:users', JSON.stringify(users));
@@ -123,7 +124,7 @@ class EventController {
         // console.log("axiois");
         const { data: users } = await axios({
           method: 'GET',
-          url: `${baseURL}/users/public`,
+          url: `${baseURLUser}/users/public`,
         });
         usersCache = users;
         await redis.set('user:users', JSON.stringify(users));
