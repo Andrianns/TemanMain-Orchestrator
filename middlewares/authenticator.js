@@ -1,5 +1,5 @@
-const axios = require("axios");
-
+const axios = require('axios');
+const baseURL = 'https://temanmain-user-production.up.railway.app';
 async function authenticator(req, res, next) {
   try {
     const { access_token } = req.headers;
@@ -7,15 +7,15 @@ async function authenticator(req, res, next) {
       throw {
         response: {
           data: {
-            error: "Please login",
+            error: 'Please login',
           },
           status: 401,
         },
       };
     }
     const { data: user } = await axios({
-      method: "GET",
-      url: "http://localhost:4001/users/tokenChecker",
+      method: 'GET',
+      url: `${baseURL}/users/tokenChecker`,
       headers: {
         access_token: access_token,
       },
