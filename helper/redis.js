@@ -1,9 +1,9 @@
 const Redis = require('ioredis');
 
 const redis = new Redis({
-  port: 19698,
-  host: 'redis-19698.c299.asia-northeast1-1.gce.cloud.redislabs.com',
-  password: 'HJCEunzbxrKA6P8pObAyX17zuZFfYZ6T',
+  port: 15952,
+  host: 'redis-15952.c1.asia-northeast1-1.gce.redns.redis-cloud.com',
+  password: 'ekc6TvdgyHa5L7fGlLLTD3NdymmCq7x1',
 });
 
 module.exports = redis;
