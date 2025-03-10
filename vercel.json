@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "buildCommand": "npm run migrate",
+    "builds": [
+      {
+        "src": "app.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "app.js"
+      }
+    ]
+  }
+  
