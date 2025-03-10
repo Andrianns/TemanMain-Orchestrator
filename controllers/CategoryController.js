@@ -25,7 +25,7 @@ class CategoryController {
       }
     } catch (error) {
       const { status, data } = error.response;
-
+      console.log(error, '<< error');
       res.status(status).json(data);
     }
   }
