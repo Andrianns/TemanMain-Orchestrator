@@ -1,7 +1,9 @@
 const redis = require('../helper/redis');
 const axios = require('axios');
-const baseURL = 'https://temanmain-app-production.up.railway.app';
-const baseURLUser = 'https://temanmain-user-production.up.railway.app';
+const baseURL = process.env.BASE_URL_APP;
+//'https://temanmain-app-production.up.railway.app';
+const baseURLUser = process.env.BASE_URL_USER;
+//'https://temanmain-user-production.up.railway.app';
 
 class EventController {
   static async getAllEvents(req, res) {

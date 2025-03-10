@@ -1,6 +1,7 @@
 const redis = require('../helper/redis.js');
 const axios = require('axios');
-const baseURL = 'https://temanmain-app-production.up.railway.app';
+const baseURL = process.env.BASE_URL_APP;
+//'https://temanmain-app-production.up.railway.app';
 class CategoryController {
   static async readAllCategory(req, res) {
     try {

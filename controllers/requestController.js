@@ -1,8 +1,10 @@
 const axios = require('axios');
 const fetch = require('node-fetch');
 const redis = require('../helper/redis.js');
-const baseURLApp = 'https://temanmain-app-production.up.railway.app';
-const baseURLUser = 'https://temanmain-user-production.up.railway.app';
+const baseURLApp = process.env.BASE_URL_APP;
+//'https://temanmain-app-production.up.railway.app';
+const baseURLUser = process.env.BASE_URL_USER;
+// 'https://temanmain-user-production.up.railway.app';
 class RequestController {
   static async createRequest(req, res) {
     try {
