@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const redis = require('../helper/redis.js');
 const axios = require('axios');
 const baseURL = process.env.BASE_URL_APP;

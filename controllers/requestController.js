@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const axios = require('axios');
 const fetch = require('node-fetch');
 const redis = require('../helper/redis.js');

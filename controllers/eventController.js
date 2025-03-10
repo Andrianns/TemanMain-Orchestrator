@@ -1,4 +1,5 @@
 const redis = require('../helper/redis');
+require('dotenv').config();
 const axios = require('axios');
 const baseURL = process.env.BASE_URL_APP;
 //'https://temanmain-app-production.up.railway.app';
