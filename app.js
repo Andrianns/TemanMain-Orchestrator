@@ -6,8 +6,10 @@ const cors = require('cors');
 const socket = require('socket.io');
 const axios = require('axios');
 const { RtcTokenBuilder, RtcRole } = require('agora-access-token');
-const baseURLApp = 'https://temanmain-app-production.up.railway.app';
-const baseURLUser = 'https://temanmain-user-production.up.railway.app';
+const baseURLApp = process.env.BASE_URL_APP;
+// 'https://temanmain-app-production.up.railway.app';
+const baseURLUser = process.env.BASE_URL_USER;
+// ('https://temanmain-user-production.up.railway.app');
 app.use(cors());
 
 app.use(express.json());
