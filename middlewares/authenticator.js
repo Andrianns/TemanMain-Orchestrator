@@ -1,5 +1,5 @@
 const axios = require('axios');
-const baseURL = 'https://temanmain-user-production.up.railway.app';
+const baseURL = process.env.BASE_URL_USER;
 async function authenticator(req, res, next) {
   try {
     const { access_token } = req.headers;
